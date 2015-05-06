@@ -1,0 +1,201 @@
+% -*-coding: utf-8-*-
+% This is an AMS-LaTeX v. 1.2 File.
+
+\documentclass{report}
+
+%\usepackage{pscyr}
+%\renewcommand{\rmdefault}{fjn}
+%\renewcommand{\ttdefault}{fcr}
+
+%\usepackage{showkeys}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8x]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{expdlist}
+\usepackage[pdftex]{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amsxtra} 
+\usepackage{sty/dbl12}
+\usepackage{srcltx}
+\usepackage{epsfig}
+\usepackage{verbatim}
+\usepackage{cite}
+\usepackage{sty/rac}
+%\usepackage[russian]{sty/ralg}
+\usepackage{listings}
+\usepackage{placeins}
+%\usepackage{floatrow}
+%\usepackage{caption}
+%\captionsetup[table]{position=t,justification=raggedright,slc=off}
+
+%\usepackage[
+%    top    = 2.00cm,
+%    bottom = 2.00cm,
+%    left   = 3.00cm,
+%    right  = 1.50cm]{geometry}
+\hoffset = -10mm
+\voffset = -20mm
+\textheight = 230mm
+\textwidth = 165mm
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Redefine margins and other page formatting
+
+%\setlength{\oddsidemargin}{0.5in}
+
+% Various theorem environments. All of the following have the same numbering
+% system as theorem.
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Теорема}
+\newtheorem{prop}[theorem]{Утверждение}
+\newtheorem{corollary}[theorem]{Следствие}
+\newtheorem{lemma}[theorem]{Лемма}
+\newtheorem{question}[theorem]{Вопрос}
+\newtheorem{conjecture}[theorem]{Гипотеза}
+\newtheorem{assumption}[theorem]{Предположение}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Определение}
+\newtheorem{notation}[theorem]{Обозначение}
+\newtheorem{condition}[theorem]{Условие}
+\newtheorem{example}[theorem]{Пример}
+\newtheorem{algorithm}[theorem]{Алгоритм}
+%\newtheorem{introduction}[theorem]{Introduction}
+
+\renewcommand{\proof}{\\\textbf{Доказательство.}~}
+
+%\def\startprog{\begin{lstlisting}[language=Java,basicstyle=\normalsize\ttfamily]}
+
+%\theoremstyle{remark}
+%\newtheorem{remark}[theorem]{Remark}
+%\include{header}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\numberwithin{theorem}{chapter}        % Numbers theorems "x.y" where x
+                                        % is the section number, y is the
+                                        % theorem number
+
+%\renewcommand{\thetheorem}{\arabic{chapter}.\arabic{theorem}}
+
+%\makeatletter                          % This sequence of commands will
+%\let\c@equation\c@theorem              % incorporate equation numbering
+%\makeatother                           % into the theorem numbering scheme
+
+%\renewcommand{\theenumi}{(\roman{enumi})}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%This command creates a box marked ``To Do'' around text.
+%To use type \todo{  insert text here  }.
+
+\newcommand{\todo}[1]{\vspace{5 mm}\par \noindent
+\marginpar{\textsc{ToDo}}
+\framebox{\begin{minipage}[c]{0.95 \textwidth}
+\tt #1 \end{minipage}}\vspace{5 mm}\par}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\binoppenalty=10000
+\relpenalty=10000
+
+\begin{document}
+
+
+% Begin the front matter as required by Rackham dissertation guidelines
+
+\initializefrontsections
+
+\pagestyle{title}
+
+\begin{center}
+Санкт-Петербургский национальный исследовательский университет \\ информационных технологий, механики и оптики
+
+\vspace{2cm}
+
+Факультет информационных технологий и программирования
+
+Кафедра компьютерных технологий
+
+\vspace{3cm}
+
+{\Large Мельник Михаил Валерьевич}
+
+\vspace{2cm}
+
+\vbox{\LARGE\bfseries
+Применение методов решения задачи о выполнимости булевой формулы для построения минимальной филогенетической сети}
+
+\vspace{4cm}
+
+{\Large Научный руководитель: аспирант кафедры КТ В.~И.~Ульянцев}
+
+\vspace{6cm}
+
+Санкт-Петербург\\ 2015
+\end{center}
+
+\newpage
+
+\setcounter{page}{3}
+\pagestyle{plain}
+
+%\dedicationpage{Put a dedication here}
+% Dedication page
+
+%\startacknowledgementspage
+% Acknowledgements page
+%{Put Acknowledgements here}
+
+% Table of contents, list of figures, etc.
+\tableofcontents
+%\listoffigures
+
+
+\def\t#1{\mbox{\texttt{\hbox{#1}}}}
+\def\b#1{\textbf{#1}}
+\def\tb#1{\t{\b{#1}}}
+
+\def\cln#1{\t{#1}}
+\def\pcn#1{\t{#1}}
+\newcommand{\p}{\par Здесь будет текст...}
+
+\def\drawfigure#1#2#3{
+        \begin{figure}[ht]
+        \centerline{ \includegraphics[width=8cm]{img/#1}}
+        \caption{#2}
+        \label{#3}
+        \end{figure}
+}
+\def\drawfigurex#1#2#3#4{
+        \begin{figure}[ht]
+        \centerline{ \includegraphics[#4]{img/#1}}
+        \caption{#2}
+        \label{#3}
+        \end{figure}
+}
+
+% Chapters
+\startthechapters
+\input{chapters/intro.tex}
+\input{chapters/chapter1.tex}
+\input{chapters/chapter2.tex}
+%\input{chapters/chapter3.tex}
+%\input{chapters/chapter4.tex}
+%\input{chapters/outro.tex}
+
+%\startappendices
+%\label{appendix}
+%\input{appendix}
+
+\bibliographystyle{sty/utf8gost705u}
+\bibliography{thesis}
+
+\end{document}

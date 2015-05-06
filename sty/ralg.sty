@@ -1,0 +1,170 @@
+%% alg.dtx
+%% Copyright (c) 1995, 1999, 2001 Staffan Ulfberg
+\NeedsTeXFormat{LaTeX2e}[1996/12/01]
+\RequirePackage{float, ifthen}
+\newlength{\algleftmarginwidth}\setlength{\algleftmarginwidth}{0in}
+\newlength{\algrightmarginwidth}\setlength{\algrightmarginwidth}{0in}
+\newlength{\alglinenowidth}\setlength{\alglinenowidth}{0.5in}
+\newlength{\algtabwidth}\setlength{\algtabwidth}{0.3in}
+\newlength{\alg@fromleft}
+\newlength{\alg@tmplen}
+\newsavebox{\alg@tmpbox}
+\newcounter{alg@inmargin}\setcounter{alg@inmargin}{0}
+\newcounter{algline}
+\newboolean{alg@linenums}
+\newboolean{alg@nonumber}
+\def\alg@language{english}
+\@ifpackageloaded{babel}{
+\iflanguage{english}{\def\alg@language{english}}{}
+\iflanguage{russian}{\def\alg@language{russian}}{}}{}
+\DeclareOption{english}{\def\alg@language{english}}
+\DeclareOption{russian}{\def\alg@language{russian}}
+\ProcessOptions
+\ifthenelse{\equal{\alg@language}{english}}{
+\def\alg@floatname{Algorithm}
+\def\alg@listname{List of Algorithms}
+\def\alg@descname{Description}
+\def\alg@inputname{Input}
+\def\alg@outputname{Output}}{}
+\ifthenelse{\equal{\alg@language}{russian}}{
+\def\alg@floatname{Алгоритм}
+\def\alg@listname{Список алгоритмов}
+\def\alg@descname{Описание}
+\def\alg@inputname{Дано}
+\def\alg@outputname{Надо}}{}
+\newcommand\floatc@alg[2]{{\bfseries\rmfamily
+   \hspace{\algleftmarginwidth}#1.} #2\par}
+\newcommand\fs@alg{
+   \let\@fs@capt\floatc@alg
+   \def\@fs@pre{}\def\@fs@post{}\def\@fs@mid{\vspace{3pt}}
+   \let\@fs@iftopcapt\iftrue}
+\floatstyle{alg}
+\newfloat{algorithmfloat}{h}{loa}
+\floatname{algorithmfloat}{\alg@floatname}
+\newcommand{\listofalgorithms}{\listof{algorithmfloat}{\alg@listname}}
+\newcommand{\alg@margin} {
+   \ifthenelse{\value{alg@inmargin}=0} {
+       \advance\leftskip\algleftmarginwidth
+       \advance\rightskip\algrightmarginwidth
+       \alg@fromleft=\leftskip
+   } {}
+   \stepcounter{alg@inmargin}
+   \parskip=0cm\parindent=0cm
+}
+\newcommand{\alg@unmargin} {
+   \setcounter{alg@inmargin}{0}%
+   \advance\leftskip-\algleftmarginwidth%
+   \advance\rightskip-\algrightmarginwidth%
+}
+
+\newenvironment{algorithm}[1][H] {
+   \begin{algorithmfloat}[#1]\alg@margin
+} {
+   \alg@unmargin\end{algorithmfloat}
+}
+\newenvironment{alg@tab}[1] {
+   \setboolean{alg@nonumber}{false}%
+   \ifthenelse{\value{alg@inmargin}=0} {\vskip\baselineskip}{}
+   \alg@margin   
+   \let\\=\alg@cr
+   \catcode`\^^M=10
+   \setcounter{algline}{0}\refstepcounter{algline}
+   \advance\leftskip#1
+   \alg@putlineno\ignorespaces
+} {
+   \setbox\alg@tmpbox=\lastbox
+   \ifhbox\alg@tmpbox{\vskip-\baselineskip}\else\par\fi
+   \alg@unmargin
+   \ifthenelse{\value{alg@inmargin}=0}{\vskip\baselineskip}{}
+}
+\newenvironment{algtab}[1][\alglinenowidth] {
+   \setboolean{alg@linenums}{true}\begin{alg@tab}{#1}
+} {\end{alg@tab}}
+\newenvironment{algtab*}[1][0cm] {
+   \setboolean{alg@linenums}{false}\begin{alg@tab}{#1}
+} {\end{alg@tab}}
+\newcommand{\alg@kill}{\setbox\alg@tmpbox=\lastbox%
+   \ifvoid\alg@tmpbox\PackageError{alg}{Attempt to remove label
+      in middle of line}\fi}
+\newcommand{\algbegin}[1][\algtabwidth]{\advance\leftskip#1%
+   \alg@kill\alg@putlineno\ignorespaces}
+\newcommand{\algend}[1][\algtabwidth]{\advance\leftskip-1#1%
+   \alg@kill\alg@putlineno\ignorespaces}
+\newcommand{\algnonumber}{\alg@kill\alg@putlabel{}%
+   \setboolean{alg@nonumber}{true}\ignorespaces}
+\newcommand{\alg@cr}{\par\refstepcounter{algline}%
+   \setboolean{alg@nonumber}{false}\alg@putlineno\ignorespaces}
+\newcommand{\alg@putlineno} {%
+   \ifthenelse{\boolean{alg@linenums}} {%
+      \ifthenelse{\boolean{alg@nonumber}}{\alg@putlabel{}} {%
+         \alg@putlabel{{\arabic{algline}:}}}}%
+      {\alg@putlabel{}}}
+\newcommand{\alg@putlabel}[1]{{%
+      \alg@tmplen=\leftskip \advance\alg@tmplen-\alg@fromleft%
+      \makebox[0cm][r]{\makebox[\alg@tmplen][l]{#1}}}}
+\newcommand{\DESC}[1]{\alg@margin\textbf{\alg@descname:~}#1\par}
+\newcommand{\INOUT}[2]{\hangindent=1cm\alg@margin\textbf{\alg@inputname: }#1\par%
+\hangindent=1cm\textbf{\alg@outputname: }#2\par}
+\newcommand{\NAME}[2]{\alg@margin\textsc{#1}(#2)\par}
+\newcommand{\alglabel}[1]{%
+   \ifthenelse{\boolean{alg@linenums}}{%
+      \label{#1}}{\alg@kill\alg@putlabel{#1}}\ignorespaces}
+\newcommand{\algref}[1]{\ifthenelse{\boolean{alg@linenums}}%
+   {\ref{#1}}{#1}}
+
+\newcommand{\AND}{\mbox{\textbf{and }}}
+
+%max: добавлено
+\newcommand{\BREAKST}[1]{\unskip\ignorespaces\textbf{break}\\}
+
+\def\KW#1{\textbf{#1}}
+\newcommand{\CALL}[2]{#1(#2)}
+\newcommand{\METHODCALL}[3]{#1.#2(#3)}
+\newcommand{\FOREACH}[2]{\unskip\ignorespaces\KW{for (}#1 : #2\KW{)} \{\\\algbegin}
+\newcommand{\WHILE}[1]{\unskip\ignorespaces\KW{while} (#1) \{ \\\algbegin}
+\newcommand{\END}{\algend\}\ \\}
+\newcommand{\ENDlabel}[1]{\algend\label{#1}\}\ \\}
+\newcommand{\STATE}[1]{\unskip\ignorespaces\mbox{#1;}\ \\}
+\newcommand{\PROCEDURE}[3]{\unskip\ignorespaces\KW{#1} #2(#3) \{\\\algbegin}
+\newcommand{\VAR}[1]{\emph{#1}}
+\newcommand{\NEWVAR}[2]{#2 {\VAR{#1}}}
+\newcommand{\NEW}[2]{\KW{new} #1(#2)}
+\newcommand{\FIELD}[2]{#1.\textsf{#2}}
+\newcommand{\THISFIELD}[1]{\textsf{#1}}
+\newcommand{\SWITCH}[1]{\unskip\ignorespaces\KW{switch (}#1\KW{)} \{\\}
+\newcommand{\CASE}[1]{\KW{case} #1 : \\\algbegin}
+\newcommand{\BREAK}{\KW{break;}\\\algend}
+\newcommand{\CONST}[1]{\textsl{#1}}
+\newcommand{\IF}[1]{\unskip\ignorespaces\KW{if} (#1) \{\\\algbegin}
+
+\newcommand{\CALLST}[2]{\unskip\mbox{\textsc{#1}(#2)}\ \\}
+\newcommand{\CONTINUE}{\unskip\ignorespaces\textbf{continue}}
+\newcommand{\DEFAULT}{\algend\textbf{default}\\\algbegin}
+\newcommand{\ELSE}{\algend\unskip\ignorespaces\textbf{else}\\\algbegin}
+\newcommand{\ELSEIF}[1]{\algend\textbf{else if} #1\\\algbegin}
+\newcommand{\ERROR}{\unskip\ignorespaces\textbf{error }}
+\newcommand{\FALSE}{\mbox{\textbf{false }}}
+\newcommand{\FORTO}[2]{\unskip\ignorespaces\textbf{for} #1 \textbf{to} #2\\\algbegin}
+\newcommand{\FORALL}[1]{\unskip\ignorespaces\textbf{для всех} #1 \textbf{\{}\\\algbegin}
+\newcommand{\GOTO}{\unskip\ignorespaces\textbf{goto~}}
+\newcommand{\IFTHEN}[2]{\unskip\ignorespaces\textbf{если~}#1 \textbf{,~то~}#2\\}
+\newcommand{\IFTHENELSE}[3]{\setbox\alg@tmpbox=
+   \hbox{\textbf{if~}#1}\copy\alg@tmpbox\textbf{then~}#2\\
+   \settowidth{\alg@tmplen}{\box\alg@tmpbox}%
+   \algbegin[\alg@tmplen]\textbf{else} #3\\ \algend[\alg@tmplen]}
+\newcommand{\NOT}{\mbox{\textbf{not }}}
+\newcommand{\OR}{\mbox{\textbf{or }}}
+\newcommand{\PRINT}{\unskip\ignorespaces\textbf{print }}
+\newcommand{\REPEAT}{\unskip\ignorespaces\textbf{repeat}\\\algbegin}
+\newcommand{\RETURN}{\textbf{return~}}
+\newcommand{\RETURNST}[1]{\unskip\ignorespaces\textbf{return} #1\\}
+\newcommand{\TRUE}{\mbox{\textbf{true }}}
+\newcommand{\ENDFOR}{\algend\textbf{end for}\ \\}
+\newcommand{\ENDWHILE}{\algend\textbf{end while}\ \\}
+\newcommand{\ENDIF}{\algend\textbf{end if}\ \\}
+\newcommand{\RAWSTATE}[1]{\unskip\ignorespaces #1\ \\}
+\newcommand{\UNTIL}[1]{\algend\textbf{until} #1\ \\}
+\newcommand{\START}{\unskip\ignorespaces}
+\endinput
+%%
+%% End of file `alg.sty'.
