@@ -101,10 +101,426 @@
 	$c_{v,u}$ истинно тогда и только тогда, когда вершина $u$ является ребенком ретикулярной вершины $v$.
 \end{itemize}
 
-Всего требуется $O((n + k)^2)$ переменных.
+Всего требуется $O((n + k)^2)$ переменных. Заметив, что $k < n$, получаем оценку на количество переменных $O(n^2)$.
 
+Необходимо закодировать уникальность каждой переменной, т.е. что у каждой вершины есть ровно один предок и ровно один левый и правый ребенок, и аналогичные утверждения для остальных переменных.
+Для этого необходимо разбить утверждение вида <<ровно один>> на два утверждения <<хотя бы один>> и <<не более чем один>>.
+В дальнейшем, для обозначения утверждения <<хотя бы один>> будет использоваться запись ALO, а для обозначения утверждения <<не более чем один>> будет использоваться запись AMO.
+
+Утверждение ALO кодируется очевидным способом (на примере предков вершины $v$):
+$$\mathrm{ALO}_p(v) = \bigvee\limits_{u \in PP(v)} p_{v,u}$$
+Это утверждение означает, что одна из переменных, отвечающих за возможного предка вершины $v$ истинна.
+Для остальных переменных утверждения <<хотя бы один>> записываются аналогичным образом.
+Суммарно потребуется $O(n)$ утверждений ALO для всех переменных, где каждое из утверждений будет состоять из $O(n)$ переменных.
+Общий размер формулы будет равен $O(n^2)$.
+
+Утверждение AMO можно закодировать различными способами.
+Самый простой способ --- попарное исключение (на примере предков вершины $v$):
+$$\mathrm{AMO}_p(v) = \bigwedge\limits_{i, j \in PP(v)~:~i < j} \left(p_{v,i} \rightarrow \neg p_{v,j}\right)$$
+Такой метод требует $O(n^2)$ утверждений для каждой переменной. 
+Существуют более оптимальные кодирования.
+В частности, в данной работе использовалось кодирование Bimander~\cite{nguyenefficient}, которое для каждой переменной требует $O(\mathrm{log}_2 n)$ дополнительных переменных, но позволяет сократить количество утверждений до $O(n \mathrm{log}_2 n)$.
+Общий размер утверждений для кодирования AMO составит $O(n^2 \mathrm{log}_2 n)$.
+
+Утверждения ALO и AMO для различных переменных указаны в секциях 1--4 Таблицы~\ref{network-table}.
+
+Чтобы удовлетворить 5 и 6 правило нумерации вершин вводятся утверждения, запрещающие неправильную нумерацию детей обычных вершин и предков ретикулярных вершин.
+Эти утверждения приведены в секции 5 Таблицы~\ref{network-table}.
+
+Кроме единственности переменных необходимо связать переменные отвечающие за предков с переменными отвечающими за детей.
+Это делается очевидным образом: если вершина $u$ является сыном вершины $v$, то вершина $v$ должна быть предком вершины $u$, и наоборот.
+Утверждения, связывающие детей и предков разных типов вершин указаны в секциях 6--9 Таблицы~\ref{network-table}.
+
+Чтобы удовлетворить 4 правило нумерации вершин, необходимо добавить утверждения, упорядочивающие ребенка ретикулярной вершины относительно предков ретикулярной вершины.
+Эти утверждения указаны в секции 10 Таблицы~\ref{network-table}.
+
+\begin{table}[t]
+\centering
+\caption{Утверждения для кодирования структуры сети.}
+\begin{tabular}{l | l | l} % @{\hskip 0.2cm} - next time
+  \qquad & Утверждение & Диапазон \\
+  
+  \hline
+  1.1 &
+  $\mathrm{ALO}_p(v)$ &
+  $v \in V; PP(v)$
+  \\
+  1.2 &
+  $\mathrm{AMO}_p(v)$ &
+  $v \in V; PP(v)$
+  \\
+  
+  \hline
+  2.1 &
+  $\mathrm{ALO}_l(v)$ &
+  \multirow{2}{*}{$v \in V; PC(v)$}
+  \\
+  2.2 &
+  $\mathrm{ALO}_r(v)$ &
+%  $v \in V; u_1 \dots u_k \in PC(v)$
+  \\
+  \hdashline
+  
+  2.3 &
+  $\mathrm{AMO}_l(v)$ &
+  \multirow{2}{*}{$v \in V; PC(v)$}
+  \\
+  2.4 &
+  $\mathrm{AMO}_r(v)$ &
+%  $v \in V; u, w \in PC(v)$
+  \\
+  
+  \hline
+  3.1 &
+  $\mathrm{ALO}_c(v)$ &
+  $v \in R; PC(v)$
+  \\
+  3.2 &
+  $\mathrm{AMO}_c(v)$ &
+  $v \in R; PC(v)$
+  \\
+  
+  \hline
+  4.1 &
+  $\mathrm{ALO}_{p^l}(v)$ &
+  \multirow{2}{*}{$v \in R; PP(v)$}
+  \\
+  4.2 &
+  $\mathrm{ALO}_{p^r}(v)$ &
+%  $v \in R; u_1 \dots u_k \in PP(v)$
+  \\
+  \hdashline
+  
+  4.3 &
+  $\mathrm{AMO}_{p^l}(v)$ &
+  \multirow{2}{*}{$v \in R; PP(v)$}
+  \\
+  4.4 &
+  $\mathrm{AMO}_{p^r}(v)$ &
+%  $v \in R; u, w \in PP(v)$
+  \\
+
+  \hline
+  5.1 &
+  $l_{v,u} \rightarrow \neg r_{v,w}$ &
+  $v \in V; u, w \in PC(v): u \geq w$
+  \\
+  5.2 &
+  $p^l_{v,u} \rightarrow \neg p^r_{v,w}$ &
+  $v \in R; u, w \in PP(v) : u \geq w$
+  \\
+  
+  \hline
+  6.1 &
+  $l_{v,u} \rightarrow p_{u,v}$ &
+  \multirow{3}{*}{$v \in V; u \in V \cap PC(v)$}
+  \\
+  6.2 &
+  $r_{v,u} \rightarrow p_{u,v}$ &
+  %$v \in V; u \in V \cap PC(v)$
+  \\
+  6.3 &
+  $p_{u,v} \rightarrow (l_{v,u} \vee r_{v,u})$ &
+  %$v \in V; u \in V \cap PC(v)$
+  \\
+  
+  \hline
+  7.1 &
+  $l_{v,u} \rightarrow (p^l_{u,v} \vee p^r_{u,v})$ &
+  \multirow{4}{*}{$v \in V; u \in R \cap PC(v)$}
+  \\
+  7.2 &
+  $r_{v,u} \rightarrow (p^l_{u,v} \vee p^r_{u,v})$ &
+  %$v \in V; u \in R \cap PC(v)$
+  \\
+  7.3 &
+  $p^l_{u,v} \rightarrow (l_{v,u} \vee r_{v,u})$ &
+  %$v \in V; u \in R \cap PC(v)$
+  \\
+  7.4 &
+  $p^r_{u,v} \rightarrow (l_{v,u} \vee r_{v,u})$ &
+  %$v \in V; u \in R \cap PC(v)$
+  \\
+  
+  \hline 
+  8.1 &
+  $c_{v,u} \rightarrow p_{u,v}$ &
+  \multirow{2}{*}{$v \in R; u \in V \cap PC(v)$}
+  \\
+  8.2 &
+  $p_{u,v} \rightarrow c_{v,u}$ &
+  %$v \in R; u \in V \cap PC(v)$
+  \\
+  
+  \hline
+  9.1 &
+  $c_{v,u} \rightarrow (p^l_{u,v} \vee p^r_{u,v})$ &
+  \multirow{3}{*}{$v \in R; u \in R \cap PC(v)$}
+  \\
+  9.2 &
+  $p^l_{u,v} \rightarrow c_{v,u}$ &
+  %$v \in R; u \in R \cap PC(v)$
+  \\
+  9.3 &
+  $p^r_{u,v} \rightarrow c_{v,u}$ &
+  %$v \in R; u \in R \cap PC(v)$
+  \\
+  
+  \hline
+  10.1\quad &
+  $c_{v,u} \rightarrow \neg p^l_{v,w}$ &
+  \multirow{2}{*}{$v \in R; u \in PC(v); w \in PP(v): u \geq w$}
+  \\
+  10.2 &
+  $c_{v,u} \rightarrow \neg p^r_{v,w}$ &
+  %$v \in R; u \in PC(v); w \in PP(v): u \geq w$
+  \\
+  
+\end{tabular}
+\label{network-table}
+\end{table}
 
 \subsection{Кодирование связей исходных деревьев с сетью}
+
+\begin{table}[t]
+\centering
+\caption{Clauses for the mapping of the tree nodes to the network nodes.}
+\begin{tabular}{l | l | l}
+  & Утверждение & Диапазон \\
+  
+  \hline
+  1.1 &
+  $a_{t,v,u_1} \vee \dots \vee a_{t,v,u_k}$ &
+  $v \in V \cup L \cup R; u_1 \dots u_k \in PU(v)$
+  \\
+  1.2 &
+  $a_{t,v,u} \rightarrow \neg a_{t,v,w}$ &
+  $v \in V \cup L \cup R; u, w \in PU(v)$
+  \\
+  
+  \hline
+  2.1 &
+  $x_{t,t_v,v_1} \vee \dots \vee x_{t,t_v,v_k}$ &
+  $t \in T; t_v \in V(t); v_1 \dots v_k \in V$
+  \\
+  2.2 &
+  $x_{t,t_v,v} \rightarrow \neg x_{t,t_v,w}$ &
+  $t \in T; t_v \in V(t); v, w \in V$
+  \\
+  2.3 &
+  $x_{t,t_v,v} \rightarrow \neg x_{t,t_w,v}$ &
+  $t \in T; t_v, t_w \in V(t); v \in V$
+  \\
+
+  \hline
+  3.1 &
+  $x_{t,v_t,v} \rightarrow u_{t,v}$ &
+  $t \in T; v \in V; v_t \in V(t)$  
+  \\
+  3.2 &
+  $x_{t,\rho_t,\rho}$ &
+  $t \in T; \rho_t = \rho(t)$
+  \\
+  
+  \hline
+  4.1 &
+  $x_{t,u_t,u} \rightarrow a_{t,v,u}$ &
+  $t \in T; v \in L; u \in PP(v); u_t \in V(t)$
+  \\
+  \hdashline
+  
+  4.2 &
+  $(x_{t,v_t,v} \wedge x_{t,u_t,u}) \rightarrow a_{t,v,u}$ &
+  \multirow{2}{*}{$t \in T; v \in V; u \in PP(v); v_t \in V(t): u_t = p(v_t)$}
+  \\
+  
+  4.3 &
+  $(x_{t,v_t,v} \wedge a_{t,v,u}) \rightarrow x_{t,u_t,u}$ &
+%  $t \in T; v \in V; u \in PP(v); v_t \in V(t): u_t = p(v_t)$
+  \\
+  \hdashline
+
+  4.4 &
+  $x_{t,v_t,v} \rightarrow \neg x_{t,u_t,u}$ &
+  $t \in T; v \in V; u \in V; v_t \in V(t); u_t = p(v_t): u < v$
+  \\
+  
+  \hline
+  5.1 &
+  $\neg x_{t,v_t,v}$ &
+  $t \in T; v \in V; v_t \in V(t): v_t < \mathrm{size}(\mathrm{subtree}(v_t))$
+  \\
+  
+  5.2 &
+  $\neg x_{t,v_t,v}$ &
+  $t \in T; v \in V; v_t \in V(t): v_t > \mathrm{size}(t) - \mathrm{depth}(v_t)$
+  \\
+  
+  5.3 &
+  $\neg x_{t,v_t,v} \vee \neg x_{t',v_{t'},v}$ &
+  $t, t' \in T; v \in V; v_t \in V(t); v_{t'} \in V(t') :$
+  \\
+  & & \quad subtrees of $t$ and $t'$ have disjoint sets of taxa
+  
+\end{tabular}
+\label{mapping-table}
+\end{table}
+
+
+
+
+\begin{table}[t]
+\centering
+\caption{Clauses for translating child-parent relations from the trees to the network.}
+\begin{tabular}{l | l | l}
+  & Утверждение & Диапазон \\
+
+  \hline
+  1.1 &
+  $(p_{v,u} \wedge u_{t,u}) \rightarrow a_{t,v,u}$ &
+  \multirow{2}{*}{$t \in T; v \in V \cup L; u \in V \cap PP(v)$}
+  \\
+    
+  1.2 &
+  $(p_{v,u} \wedge a_{t,v,u}) \rightarrow u_{t,u}$  &
+  %$t \in T; v \in V \cup L; u \in V \cap PP(v)$
+  \\
+
+  \hdashline 
+  1.3 &
+  $(p_{v,u} \wedge \neg u_{t,u} \wedge a_{t,u,w}) \rightarrow a_{t,v,w}$ &
+  \multirow{2}{*}{$t \in T; v \in V \cup L; u \in V \cap PP(v); w \in PP(u)$}
+  \\
+    
+  1.4 &
+  $(p_{v,u} \wedge \neg u_{t,u} \wedge a_{t,v,w}) \rightarrow a_{t,u,w}$ &
+  %$t \in T; v \in V \cup L; u \in V \cap PP(v); w \in PP(u)$
+  \\
+
+  \hline
+  2.1 &
+  $(p^l_{v,u} \wedge d_{t,v} \wedge a_{t,u,w}) \rightarrow a_{t,v,w}$ &
+  \multirow{4}{*}{$t \in T; v \in R; u \in R \cap PP(v); w \in PU(u)$}
+  \\
+
+  2.2 &
+  $(p^l_{v,u} \wedge d_{t,v} \wedge a_{t,v,w}) \rightarrow a_{t,u,w}$ &
+  %$t \in T; v \in R; u \in R \cap PP(v); w \in PU(u)$
+  \\
+    
+  2.3 &
+  $(p^r_{v,u} \wedge \neg d_{t,v} \wedge a_{t,u,w}) \rightarrow a_{t,v,w}$ &
+  %$t \in T; v \in R; u \in R \cap PP(v); w \in PU(u)$
+  \\
+  
+  2.4 &
+  $(p^r_{v,u} \wedge \neg d_{t,v} \wedge a_{t,v,w}) \rightarrow a_{t,u,w}$ &
+  %$t \in T; v \in R; u \in R \cap PP(v); w \in PU(u)$
+  \\
+  
+  \hdashline
+  2.5 &
+  $(p^l_{v,u} \wedge d_{t,v} \wedge u_{t,u}) \rightarrow a_{t,v,u}$ &
+  \multirow{2}{*}{$t \in T; v \in R; u \in V \cap PP(v)$}
+  \\
+  
+  2.6 &
+  $(p^r_{v,u} \wedge \neg d_{t,v} \wedge u_{t,u}) \rightarrow a_{t,v,u}$ &
+  %$t \in T; v \in R; u \in V \cap PP(v)$
+  \\
+  
+  \hdashline
+  2.7 & 
+  $(p^l_{v,u} \wedge d_{t,v} \wedge \neg u_{t,u} \wedge a_{t,u,w}) \rightarrow a_{t,v,w}$ &
+  \multirow{4}{*}{$t \in T; v \in R; u \in V \cap PP(v); w \in PU(u)$}
+  \\
+ 
+  2.8 &
+  $(p^l_{v,u} \wedge d_{t,v} \wedge \neg u_{t,u} \wedge a_{t,v,w}) \rightarrow a_{t,u,w}$ &
+  %$t \in T; v \in R; u \in V \cap PP(v); w \in PU(u)$
+  \\
+  
+  2.9 &
+  $(p^r_{v,u} \wedge \neg d_{t,v} \wedge \neg u_{t,u} \wedge a_{t,u,w}) \rightarrow a_{t,v,w}$ &
+  %$t \in T; v \in R; u \in V \cap PP(v); w \in PU(u)$
+  \\
+  
+  2.10 &
+  $(p^r_{v,u} \wedge \neg d_{t,v} \wedge \neg u_{t,u} \wedge a_{t,v,w}) \rightarrow a_{t,u,w}$ &
+  %$t \in T; v \in R; u \in V \cap PP(v); w \in PU(u)$
+  \\
+   
+  \hline
+  3.1 &
+  $(p^l_{v,u} \wedge \neg d_{t,v}) \rightarrow \neg u^r_{t,u}$ &
+  \multirow{2}{*}{$t \in T; v \in R; u \in R \cap PP(v)$}
+  \\
+
+  3.2 &
+  $(p^r_{v,u} \wedge d_{t,v}) \rightarrow \neg u^r_{t,u}$ &
+  %$t \in T; v \in R; u \in R \cap PP(v)$
+  \\
+
+  \hdashline
+  3.3 &
+  $(p^l_{v,u} \wedge \neg d_{t,v}) \rightarrow \neg u_{t,u}$ &
+  \multirow{2}{*}{$t \in T; v \in R; u \in V \cap PP(v)$}
+  \\
+  
+  3.4 & 
+  $(p^r_{v,u} \wedge d_{t,v}) \rightarrow \neg u_{t,u}$ &
+  %$t \in T; v \in R; u \in V \cap PP(v)$
+  \\
+
+  \hline
+  4.1 &
+  $(p^l_{v,u} \wedge d_{t,v} \wedge u^r_{t,v}) \rightarrow u^r_{t,u}$ &
+  \multirow{3}{*}{$t \in T; v \in R; u \in R \cap PP(v)$}
+  \\
+
+  4.2 &
+  $(p^r_{v,u} \wedge \neg d_{t,v} \wedge u^r_{t,v}) \rightarrow u^r_{t,u}$ &
+  %$t \in T; v \in R; u \in R \cap PP(v)$
+  \\
+
+  4.3 &
+  $\neg u^r_{t,v} \rightarrow \neg u^r_{t,u}$ &
+  %$t \in T; v \in R; u \in R \cap PP(v)$
+  \\
+  
+  \hdashline
+  4.4 &
+  $\neg u^r_{t,v} \rightarrow \neg u_{t,u}$ &
+  $t \in T; v \in R; u \in V \cap PP(v)$
+  \\
+
+  4.5 &
+  $c_{v,u} \rightarrow u^r_{t,v}$ &
+  $t \in T; v \in R; u \in \left(V \cup L\right) \cap PC(v)$
+  \\
+
+  \hline
+  5.1 &
+  $p_{v,u} \rightarrow \neg a_{t,u,w}$ &
+  $t \in T; v \in V \cup L; u \in R \cap PP(v);$
+  \\ & & \quad$w \in PU(u): w \leq v$
+  \\
+  
+  5.2 &
+  $(p_{v,u} \wedge a_{t,u,w}) \rightarrow a_{t,v,w}$ &
+  $t \in T; v \in V \cup L; u \in R \cap PP(v);$
+  \\ & & \quad$w \in PU(u): w > v$
+  \\
+  
+  5.3 &
+  $(p_{v,u} \wedge a_{t,v,w}) \rightarrow a_{t,u,w}$ &
+  $t \in T; v \in V \cup L; u \in R \cap PP(v);$
+  \\ & & \quad$w \in PU(u): w > v$
+  \\
+
+\end{tabular}
+\label{child-parent-table}
+\end{table}
 
 \FloatBarrier
 \section{Решение булевой формулы и постпроцессинг}
