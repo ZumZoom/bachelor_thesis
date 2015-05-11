@@ -161,30 +161,6 @@
 \tableofcontents
 %\listoffigures
 
-
-\def\t#1{\mbox{\texttt{\hbox{#1}}}}
-\def\b#1{\textbf{#1}}
-\def\tb#1{\t{\b{#1}}}
-
-\def\cln#1{\t{#1}}
-\def\pcn#1{\t{#1}}
-\newcommand{\p}{\par Здесь будет текст...}
-
-\def\drawfigure#1#2#3{
-        \begin{figure}[ht]
-        \centerline{ \includegraphics[width=8cm]{img/#1}}
-        \caption{#2}
-        \label{#3}
-        \end{figure}
-}
-\def\drawfigurex#1#2#3#4{
-        \begin{figure}[ht]
-        \centerline{ \includegraphics[#4]{img/#1}}
-        \caption{#2}
-        \label{#3}
-        \end{figure}
-}
-
 % Chapters
 \startthechapters
 \input{chapters/intro.tex}
