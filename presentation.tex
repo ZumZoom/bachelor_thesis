@@ -2,7 +2,7 @@
 %\usecolortheme[named=Blue]{structure} % Plum, OliveGreen
 \usetheme{Copenhagen} % hannover, bergen, paloalto, default
 \setbeamertemplate{footline}[frame number]
-\setbeamertemplate{navigation symbols}{}
+\beamertemplatenavigationsymbolsempty
 \usepackage[T2A]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[english,russian]{babel}
@@ -18,6 +18,14 @@
 \begin{frame}
   \titlepage
 \end{frame}
+
+\AtBeginSection[]
+{
+  \begin{frame}
+    \frametitle{Содержание}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
 
 %Обзор предметной области
 \section{Обзор предметной области}
