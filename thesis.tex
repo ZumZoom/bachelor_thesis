@@ -33,6 +33,12 @@
 \usepackage{multirow}
 \usepackage{arydshln}
 \usepackage{url}
+\mathchardef\UrlBreakPenalty=10000
+\mathchardef\UrlBigBreakPenalty=10000
+\usepackage[toc,page]{appendix}
+\renewcommand{\appendixtocname}{Приложения}
+\renewcommand{\appendixpagename}{Приложения}
+\renewcommand{\appendixname}{Приложение}
 
 %\usepackage[
 %    top    = 2.00cm,
@@ -44,73 +50,7 @@
 \textheight = 230mm
 \textwidth = 165mm
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Redefine margins and other page formatting
-
-%\setlength{\oddsidemargin}{0.5in}
-
-% Various theorem environments. All of the following have the same numbering
-% system as theorem.
-
-\theoremstyle{plain}
-\newtheorem{theorem}{Теорема}
-\newtheorem{prop}[theorem]{Утверждение}
-\newtheorem{corollary}[theorem]{Следствие}
-\newtheorem{lemma}[theorem]{Лемма}
-\newtheorem{question}[theorem]{Вопрос}
-\newtheorem{conjecture}[theorem]{Гипотеза}
-\newtheorem{assumption}[theorem]{Предположение}
-
-\theoremstyle{definition}
-\newtheorem{definition}[theorem]{Определение}
-\newtheorem{notation}[theorem]{Обозначение}
-\newtheorem{condition}[theorem]{Условие}
-\newtheorem{example}[theorem]{Пример}
-\newtheorem{algorithm}[theorem]{Алгоритм}
-%\newtheorem{introduction}[theorem]{Introduction}
-
-\renewcommand{\proof}{\\\textbf{Доказательство.}~}
-
-%\def\startprog{\begin{lstlisting}[language=Java,basicstyle=\normalsize\ttfamily]}
-
-%\theoremstyle{remark}
-%\newtheorem{remark}[theorem]{Remark}
-%\include{header}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\numberwithin{theorem}{chapter}        % Numbers theorems "x.y" where x
-                                        % is the section number, y is the
-                                        % theorem number
-
-%\renewcommand{\thetheorem}{\arabic{chapter}.\arabic{theorem}}
-
-%\makeatletter                          % This sequence of commands will
-%\let\c@equation\c@theorem              % incorporate equation numbering
-%\makeatother                           % into the theorem numbering scheme
-
-%\renewcommand{\theenumi}{(\roman{enumi})}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%This command creates a box marked ``To Do'' around text.
-%To use type \todo{  insert text here  }.
-
-\newcommand{\todo}[1]{\vspace{5 mm}\par \noindent
-\marginpar{\textsc{ToDo}}
-\framebox{\begin{minipage}[c]{0.95 \textwidth}
-\tt #1 \end{minipage}}\vspace{5 mm}\par}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\binoppenalty=10000
-\relpenalty=10000
-
 \begin{document}
-
 
 % Begin the front matter as required by Rackham dissertation guidelines
 
@@ -167,14 +107,13 @@
 \input{chapters/chapter1.tex}
 \input{chapters/chapter2.tex}
 \input{chapters/chapter3.tex}
-\input{chapters/chapter4.tex}
 \input{chapters/outro.tex}
-
-%\startappendices
-%\label{appendix}
-%\input{appendix}
 
 \bibliographystyle{sty/utf8gost705u}
 \bibliography{thesis}
+
+\begin{appendices}
+  \input{chapters/appendix.tex}
+\end{appendices}
 
 \end{document}
