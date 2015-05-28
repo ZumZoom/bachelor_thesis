@@ -432,7 +432,7 @@
 }
 
 \def\startappendices{\par
- \def\thechapter{\Alph{chapter}}
+ \def\thechapter{\arabic{chapter}}
  \def\thesection{\thechapter.\arabic{section}}
 
  \ifx \selectfont\undefined
@@ -453,16 +453,16 @@
  \let\chapter=\startanappendix
  \setcounter{chapter}{0}
  \setcounter{section}{0}
- \def\@chapapp{APPENDIX}
+ \def\@chapapp{Приложение}
  \def\tocname{loa}
- \pagestyle{plain}
+ \pagestyle{chappage}
  \clearpage
  \thispagestyle{chappage}
- \addcontentsline{toc}{chapter}{APPENDICES}
- \hbox{ }
- \vfill
- \centerline{\large\bf APPENDICES}
- \vfill
+ \addcontentsline{toc}{chapter}{Приложения}
+% \hbox{ }
+% \vfill
+% \centerline{\Large\bf Приложения}
+% \vfill
 }
 
 \let\appendix=\startappendices
@@ -480,12 +480,12 @@
 % \addtocontents{lox}{\hbox{ }}
  \hbox{ }
  \vspace{0.5in}
- \centerline{\large\bf \@chapapp{} \thechapter} \par
+ \centerline{\huge\bf \@chapapp{} \thechapter} \par
  \vspace{0.3in}
 % \begin{center}
   \Large\bf #1
 % \end{center}
- \vspace{0.7in}
+ \vspace{0.5in}
 }
 
 \def\endofchapterbibliography{%

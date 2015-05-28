@@ -35,10 +35,6 @@
 \usepackage{url}
 \mathchardef\UrlBreakPenalty=10000
 \mathchardef\UrlBigBreakPenalty=10000
-\usepackage[toc,page]{appendix}
-\renewcommand{\appendixtocname}{Приложения}
-\renewcommand{\appendixpagename}{Приложения}
-\renewcommand{\appendixname}{Приложение}
 
 %\usepackage[
 %    top    = 2.00cm,
@@ -112,8 +108,8 @@
 \bibliographystyle{sty/utf8gost705u}
 \bibliography{thesis}
 
-\begin{appendices}
-  \input{chapters/appendix.tex}
-\end{appendices}
+\appendix
+
+\input{chapters/appendix.tex}
 
 \end{document}
