@@ -2,7 +2,12 @@
 %% to format bibliography according to
 %% GOST 7.0.5-2008 
 %%
-%% Package version - 0.1 beta
+%% Package version - 1.2
+%%
+%%version history
+%%1.0 базовая версия
+%%1.1 поправлена ошибка с полем page (при ненулевом numpages) из одной цифры (c. 319). Теперь - C. 319
+%%1.2 поправлен баг, решена проблема с bibentry. В конце каждой записи ставится пустая группа: {}. Строки 145--149 кода
 %%
 %% For the Ukrainian|English bibliographic entries
 %% you need to create field
@@ -10,9 +15,9 @@
 %% Default language is Russian.
 %% Field numpages for books must contain number of pages.
 %%
-%% See examples in test_utf8gost705u.pdf and samples.pdf
+%% See examples in test.pdf and samples.pdf
 %%
-%% You can send your questions and comments to e-mail: tex_support<at>uniyar.ac.ru
+%% You can send your questions and comments to e-mail: tex_support@uniyar.ac.ru
 %%
 
 ENTRY
@@ -137,6 +142,11 @@ FUNCTION {output.check}
 FUNCTION {fin.entry}
 { add.period$
   write$
+%% вставляем пустую группу в конце. вер.1.2 %%%%%%%%%%%%%%%%%%%%%%
+  after.sentence 'output.state :=
+  "{}"
+  write$
+%% конец вставки %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   newline$
 }
 
@@ -444,12 +454,12 @@ FUNCTION {bbl.iin}  %     { "\bblIn{}" }
       if$}
   if$
 }
-
+%% Поле page - номер страницы или диапазон, поле numpage - количество страниц
 FUNCTION {bbl.pages}    % { "\bblpp." }
 {  curlanguage "english" =
     {"pp."}
     { curlanguage "ukrainian" = curlanguage "russian" = or
-           {"{с.}"}
+           {"{C.}"} %%правлено
            {"language is not defined: " language  "pp." * * warning$ "pp."}
       if$}
   if$
@@ -844,7 +854,7 @@ FUNCTION {format.pages}%%%%Поправлено (P вместо pp и p вмес
     { "" }
     { pages multi.page.check
         { bbl.ppage pages n.dashify tie.connect }
-        { bbl.page pages tie.connect }
+        { bbl.ppage pages tie.connect }   % поправлено 16.3.2012
       if$
     }
   if$
